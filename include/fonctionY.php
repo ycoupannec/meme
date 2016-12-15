@@ -1,9 +1,10 @@
 <?php
 
 fonction creerImage($monImage,$type,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot){
-	$font=loadFonts('04b');
+	$font=loadFonts('myfont');
+	$x=imagesx($monImage);
+	$y=imagesy($monImage);
 	
-
 
 	switch ($type) {
 		case 'jpeg':
