@@ -1,0 +1,20 @@
+header {
+    background-color: black;
+    height: 5em;
+    padding-top: 1.3em;
+}
+
+body {
+    background-color: #EEEEEE;
+}
+
+footer {
+    background-color: black;
+    color: white;
+    height: 5em;
+}
+
+p {
+    font-size: 250%;
+    text-align: center;
+}
