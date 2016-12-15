@@ -1,11 +1,14 @@
 header {
     background-color: black;
     height: 5em;
-    padding-top: 1.3em;
+}
+
+#bouton {
+    margin-top: 1.3em;
 }
 
 body {
-    background-color: #EEEEEE;
+    background-color: rgb(238, 238, 238);
 }
 
 footer {
