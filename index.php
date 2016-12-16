@@ -5,6 +5,11 @@
   Mustache_Autoloader::register();
   //appeler .init
   include "include/.init.php";
+  include "include/fonction.php";
+
+  
+  $sql = new SQLpdo();
+  
 
   //on explique à Mustach qu'on va utiliser comme extension le .html
   $options =  array('extension' => '.html');
@@ -16,22 +21,10 @@
 
   echo $m->render('header');
 
-  //new pdo connexion à la base de donnée avec le.init
-  try {
-      $dbh = new PDO($dsn, $user, $password);
-  } catch (PDOException $e) {
-      echo 'Connexion échouée : ' . $e->getMessage();
-  }
-
   //si action == "generate" alors on charge le formulaire de génération (creation.html)
   if (isset($_GET['action']) && $_GET['action'] =="generate"){
-
-    //indiquer que l'on veut n'afficher qu'une seule image :
-    $sth = $dbh->prepare("SELECT * FROM `memeImage` WHERE `ID`= ".$_GET['id']);//prepare SQL request
-    $sth->execute();//execute la requette sql
-
-    // recupère toutes les données
-    $result = $sth->fetch();
+  $result = $sql->fetch("SELECT * FROM `memeImage` WHERE ID= :id ", array(':id' => $_GET['id']));//prepare SQL request
+    
     //récupérer l'ID et le Type afin d'afficher l'image
     echo $m->render('creation',
       array(
@@ -41,17 +34,16 @@
     );
   }
   elseif  (isset($_GET['action']) && $_GET['action'] =="vue") {
-    echo $m->render('vue');
+  if(isset($_GET['id']) && is_numeric($_GET['id'])){
+    $id = intval($_GET['id']);
+    $result = $sql->fetch("SELECT * FROM `memeGenerate` LEFT JOIN memeImage ON memeImage.ID = memeGenerate.ID_memeImage WHERE memeGenerate.ID = :id ", array(':id' => $_GET['id']));//prepare SQL request
+    
+    echo $m->render('vue', array('ID' => $result['url'], 'TYPE' => $result['type']));
+  }
   }
   //si action ne vaut rien, ou si on ne connait pas la valeur de action alors on charge le main.html
   else{
-    $sth = $dbh->prepare("SELECT * FROM `memeImage`");//prepare SQL request
-    $sth->execute();//execute la requette sql
-    $result = $sth->fetchAll(PDO::FETCH_ASSOC);// recupère toutes les données
-
-
-
-
+    $result = $sql->fetchAll("SELECT * FROM `memeImage`");//prepare SQL request
     echo $m->render('main', array("list" => $result));
   }
 
