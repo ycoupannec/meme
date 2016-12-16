@@ -37,7 +37,7 @@ if($idImg && $sizeTop && $sizeBot && $clrTop && $clrBot && $textTop && $textBot 
 	$infoImg = recupImgSource($idImg);
 	$nomNouvImg = creerImage($infoImg,$textTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot);
 	$idNouvGen = insertImg($nomNouvImg,$textTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot,$infoImg['ID']);
-	header('location:index.php?action=vue&id='.$idNouvGen);
+	header('location:../index.php?action=vue&id='.$idNouvGen);
 }
 else{
 	echo "remplissez tous les champs";
