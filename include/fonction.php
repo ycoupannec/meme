@@ -2,26 +2,34 @@
 define('EMPL_ORIGNAL', '../public/img/');
 define('EMPL_UPL', '../public/uploadImg/');
 
-
-/*echo "resultat ". $_REQUEST['image']."<br/>";*/
-
-
-$sizeTop = request('sizeTop');
+/*Pour générer une image on a besoin de :
+$sizeTop; taille de la police du haut.
+$sizeBot; taille de la police du bas.
+$clrTop; couleur de la police du haut.
+$clrBot; couleur de la police du bas.
+$textTop; text du haut.
+$textBot; text du bas 
+$idImg ; Id de l’image sélectionné.
+ 
+*/
+/*$sizeTop = request('sizeTop');
 $sizeBot = request('sizeBot');
 $clrTop = request('clrTop');
-$clrBot = request('clrBot');
+$clrBot = request('clrBot');*/
 $textTop = request('textTop');
 $textBot = request('textBot');
 $idImg = request('idImg');
 
-/*echo $type;
-echo $sizeTop;
-echo $sizeBot;
-echo $clrTop;
-echo $clrBot;
-echo $textTop;
-echo $textBot;
-*/
+/*-------------------------------*/
+			/*DEBUG*/
+/*-------------------------------*/
+$sizeTop = 30;
+$sizeBot = 30;
+$clrTop ="fffff";
+$clrBot = "ffff";
+
+
+/*-------------------------------*/
 
 
 if($idImg && $sizeTop && $sizeBot && $clrTop && $clrBot && $textTop && $textBot  ){
@@ -85,11 +93,7 @@ function creerImage($info,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot){
 	$y = imagesy($image);
 	$colorTop = imagecolorallocate($image,255,255,255);
 	imagestring($image, $font, 0, 0,$texteTop,$colorTop);
-	/*, $clrTop*/
-
 	imagestring($image, $font, 150, 150,$textBot,$colorTop);
-	/*, $clrBot*/
-/*	$IDimg=;*/
 
 	switch ($info['type']) {
 		case 'jpeg':
@@ -166,7 +170,7 @@ class SQLpdo {
 }
 
 function insertImg($img,$textTop,$textBot,$clrTop=null,$clrBot=null,$sizeTop=null,$sizeBot=null,$id){
-	echo $img." ".$textTop." ".$textBot." ".$clrTop." ".$clrBot." ".$sizeTop." ".$sizeBot." ".$id;
+	
 	$sql= new SQLpdo();
 	$idGen=$sql->insert("INSERT INTO `memeGenerate` ( url, textTop, textBot, clrTop, clrBot, sizeTop, sizeBot, ID_memeImage) VALUES ( :url, :textTop, :textBot, :clrTop, :clrBot, :sizeTop, :sizeBot, :ID_memeImage)",
 		array(":url" => " ",':textTop'=> $textTop, ':textBot'=> $textBot, ':clrTop'=> $clrTop, ':clrBot'=> $clrBot, ':sizeTop'=> $sizeTop, ':sizeBot'=> $sizeBot, ':ID_memeImage'=> $id ));
