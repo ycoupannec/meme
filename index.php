@@ -30,18 +30,18 @@
     $sth = $dbh->prepare("SELECT * FROM `memeImage` WHERE `ID`= ".$_GET['id']);//prepare SQL request
     $sth->execute();//execute la requette sql
 
+    // recupère toutes les données
     $result = $sth->fetch();
-  //  $result = $sth->fetchAll(PDO::FETCH_ASSOC);// recupère toutes les données
-
-    print_r($result);
-
-//récupérer l'ID et le Type afin d'afficher l'image
+    //récupérer l'ID et le Type afin d'afficher l'image
     echo $m->render('creation',
       array(
         "ID" => $result['ID'],
         "type" => $result['type']
       )
     );
+  }
+  elseif  (isset($_GET['action']) && $_GET['action'] =="vue") {
+    echo $m->render('vue');
   }
   //si action ne vaut rien, ou si on ne connait pas la valeur de action alors on charge le main.html
   else{
