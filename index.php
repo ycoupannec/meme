@@ -25,13 +25,31 @@
 
   //si action == "generate" alors on charge le formulaire de génération (creation.html)
   if (isset($_GET['action']) && $_GET['action'] =="generate"){
-    echo $m->render('creation');
+
+    $sth = $dbh->prepare("SELECT * FROM `memeImage` WHERE `ID`= ".$_GET['id']);//prepare SQL request
+    $sth->execute();//execute la requette sql
+
+    $result = $sth->fetch();
+  //  $result = $sth->fetchAll(PDO::FETCH_ASSOC);// recupère toutes les données
+
+    print_r($result);
+
+
+    echo $m->render('creation',
+      array(
+        "ID" => $result['ID'],
+        "type" => $result['type']
+      )
+    );
   }
   //si action ne vaut rien, ou si on ne connait pas la valeur de action alors on charge le main.html
   else{
     $sth = $dbh->prepare("SELECT * FROM `memeImage`");//prepare SQL request
     $sth->execute();//execute la requette sql
     $result = $sth->fetchAll(PDO::FETCH_ASSOC);// recupère toutes les données
+
+
+
 
     echo $m->render('main', array("list" => $result));
   }
