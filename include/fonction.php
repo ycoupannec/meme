@@ -135,15 +135,10 @@ function loadFonts($nameFont){
 }
 
 class SQLpdo {
-	function __CONSTRUCT($pass = false,$login=false, $adress=false,$db=false){
-		$config['login']=($login) ? $login :'marieb';
-		$config['mdp']= ($pass) ? $pass : '4V9FbQcYqq';
-		$config['adress']=($adress) ? $adress :'127.0.0.1';
-		$config['db']=($db) ? $db :'marieb';
-		
+	function __construct(){
 
 		try {
-		    $this->db = new PDO('mysql:dbname='.$config['db'].';host='.$config['adress'].'', $config['login'], $config['mdp']);
+		    $this->db = new PDO('mysql:dbname='.DB.';host='.ADRESS.'',LOGIN,MDP);
 		} catch (PDOException $e) {
 		    echo 'Connexion échouée : ' . $e->getMessage();
 		}
