@@ -13,8 +13,8 @@
       'loader' => new Mustache_Loader_FilesystemLoader('template/themeA', $options),
   ));
   //affichage du rendu
-  $prenom = "marie";
-  echo $m->render('header', array("PRENOM" => $prenom));
+
+  echo $m->render('header');
 
   //new pdo connexion à la base de donnée avec le.init
   try {
