@@ -26,6 +26,7 @@
   //si action == "generate" alors on charge le formulaire de génération (creation.html)
   if (isset($_GET['action']) && $_GET['action'] =="generate"){
 
+    //indiquer que l'on veut n'afficher qu'une seule image :
     $sth = $dbh->prepare("SELECT * FROM `memeImage` WHERE `ID`= ".$_GET['id']);//prepare SQL request
     $sth->execute();//execute la requette sql
 
@@ -34,7 +35,7 @@
 
     print_r($result);
 
-
+//récupérer l'ID et le Type afin d'afficher l'image
     echo $m->render('creation',
       array(
         "ID" => $result['ID'],
