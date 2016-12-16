@@ -1,4 +1,4 @@
-function geneImage(idImg,sizeTop,sizeBot,clrTop,clrBot,textTop,textBot){
+function geneImage(idImg,sizeTop=null,sizeBot=null,clrTop=null,clrBot=null,textTop,textBot){
 	/*console.log($image,$type,$sizeTop,$sizeBot,$clrTop,$clrBot,$textTop,textBot);*/
 	$.get('include/fonction.php',{
 
