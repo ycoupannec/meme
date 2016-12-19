@@ -21,8 +21,17 @@
 
   echo $m->render('header');
 
+
+
+
   //si action == "generate" alors on charge le formulaire de génération (creation.html)
-  if (isset($_GET['action']) && $_GET['action'] =="generate"){
+  if(isset($_GET['m']) && !empty($_GET['m'])){
+  $action = $_GET['m']; 
+  if($result = $sql->fetch("SELECT * FROM `memeGenerate` LEFT JOIN memeImage ON memeImage.ID = memeGenerate.ID_memeImage WHERE memeGenerate.url= :url ", array(':url' => $action))){//prepare SQL request
+    echo $m->render('vue', array('ID' => $result['url'], 'TYPE' => $result['type'], 'IDGENE' => URL_SITE.'?m='.$result['url']));
+  }
+  }
+  else if (isset($_GET['action']) && $_GET['action'] =="generate"){
   $result = $sql->fetch("SELECT * FROM `memeImage` WHERE ID= :id ", array(':id' => $_GET['id']));//prepare SQL request
     
     //récupérer l'ID et le Type afin d'afficher l'image
@@ -38,7 +47,7 @@
     $id = intval($_GET['id']);
     $result = $sql->fetch("SELECT * FROM `memeGenerate` LEFT JOIN memeImage ON memeImage.ID = memeGenerate.ID_memeImage WHERE memeGenerate.ID = :id ", array(':id' => $_GET['id']));//prepare SQL request
     
-    echo $m->render('vue', array('ID' => $result['url'], 'TYPE' => $result['type']));
+    echo $m->render('vue', array('ID' => $result['url'], 'TYPE' => $result['type'], 'IDGENE' => URL_SITE.'?m='.$result['url']));
   }
   }
   //si action ne vaut rien, ou si on ne connait pas la valeur de action alors on charge le main.html

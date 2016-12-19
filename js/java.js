@@ -22,3 +22,11 @@ function geneImage(idImg,sizeTop=null,sizeBot=null,clrTop=null,clrBot=null,textT
 
 
 }
+
+function changeSize(champ,type){
+	if (type=="add"){
+		$(champ).val(parseInt($(champ).val())+1);
+	}else{
+		$(champ).val(parseInt($(champ).val())-1);
+	}
+}

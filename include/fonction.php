@@ -11,10 +11,10 @@ $textBot; text du bas
 $idImg ; Id de l’image sélectionné.
  
 */
-/*$sizeTop = request('sizeTop');
+$sizeTop = request('sizeTop');
 $sizeBot = request('sizeBot');
 $clrTop = request('clrTop');
-$clrBot = request('clrBot');*/
+$clrBot = request('clrBot');
 $textTop = request('textTop');
 $textBot = request('textBot');
 $idImg = request('idImg');
@@ -22,10 +22,13 @@ $idImg = request('idImg');
 /*-------------------------------*/
 			/*DEBUG*/
 /*-------------------------------*/
-$sizeTop = 30;
-$sizeBot = 30;
-$clrTop ="fffff";
-$clrBot = "ffff";
+/*$sizeTop = 30;
+$sizeBot = 30;*/
+$clrHexaBot=$clrBot;
+$clrHexaTop=$clrTop;
+$clrBot =  hex2rgba($clrBot);
+$clrTop =  hex2rgba($clrTop);
+
 
 
 /*-------------------------------*/
@@ -35,7 +38,7 @@ if($idImg && $sizeTop && $sizeBot && $clrTop && $clrBot && $textTop && $textBot 
 	
 	$infoImg = recupImgSource($idImg);
 	$nomNouvImg = creerImage($infoImg,$textTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot);
-	$idNouvGen = insertImg($nomNouvImg,$textTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot,$infoImg['ID']);
+	$idNouvGen = insertImg($nomNouvImg,$textTop,$textBot,$clrHexaTop,$clrHexaBot,$sizeTop,$sizeBot,$infoImg['ID']);
 	header('location:../index.php?action=vue&id='.$idNouvGen);
 }
 else{
@@ -93,8 +96,8 @@ function creerImage($info,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot){
 	
 
 
-	$colorTop = imagecolorallocate($image,255,255,255);
-	$colorBot = imagecolorallocate($image,255,255,155);
+	$colorTop = imagecolorallocate($image,$clrTop[0],$clrTop[1],$clrTop[2]);
+	$colorBot = imagecolorallocate($image,$clrBot[0],$clrBot[1],$clrBot[2]);
 	/*imagestring($image, $font, 0, 0,$texteTop,$colorTop);
 	imagestring($image, $font, 150, 150,$textBot,$colorTop);*/
 	$textBoxTop=imagettfbbox($sizeTop, 0, $font, $texteTop);
@@ -187,5 +190,30 @@ function insertImg($img,$textTop,$textBot,$clrTop=null,$clrBot=null,$sizeTop=nul
 	return $idGen;
 }
 
+function hex2rgba($color){
+	$default = '0,0,0';
+
+  //Return default if no color provided
+	if(empty($color))
+	return $default; 
+
+  //Sanitize $color if "#" is provided 
+	if ($color[0] == '#' ) {
+	$color = substr( $color, 1 );
+	}
+
+  //Check if color has 6 or 3 characters and get values
+	if (strlen($color) == 6) {
+		$hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
+	} elseif ( strlen( $color ) == 3 ) {
+		$hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
+	} else {
+   		return $default;
+	}
+  //Convert hexadec to rgb
+	$rgb =  array_map('hexdec', $hex);
+  
+	return $rgb;
+}
 
 
