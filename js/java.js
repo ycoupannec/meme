@@ -30,3 +30,11 @@ function changeSize(champ,type){
 		$(champ).val(parseInt($(champ).val())-1);
 	}
 }
+
+function testChampRemplis(){
+	if ($("#textBot").val()!="" || $("#textTop").val()!=""){
+		return true;
+	}else{
+		return false;
+	}
+}

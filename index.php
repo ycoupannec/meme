@@ -6,6 +6,7 @@
   //appeler .init
   require_once "include/.init.php";
   require_once "include/fonction.php";
+  require_once "include/upload.class.php";
 
   
   $sql = new SQLpdo();
@@ -20,6 +21,16 @@
   //affichage du rendu
 
   echo $m->render('header');
+
+  if(isset($_POST['sendInput'])){
+    $upl = new uploadFile('public/img/');
+    $upl->uploadFromInput('UploadMeme');
+  if($upl->extensionConfirme){
+    $id = $sql->insert('INSERT INTO memeImage (nom, type) VALUES(:name, :type)', array(':name' => uniqid(), ':type' => $upl->getExtension()));
+    $upl->setNameFile($id);
+    $upl->upload();
+  }
+  }
 
 
 

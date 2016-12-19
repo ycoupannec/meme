@@ -1,6 +1,7 @@
 <?php
 
 require_once ".init.php";
+
 /*Pour générer une image on a besoin de :
 $sizeTop; taille de la police du haut.
 $sizeBot; taille de la police du bas.
@@ -34,7 +35,7 @@ $clrTop =  hex2rgba($clrTop);
 /*-------------------------------*/
 
 
-if($idImg && $sizeTop && $sizeBot && $clrTop && $clrBot && $textTop && $textBot  ){
+if($idImg && $sizeTop && $sizeBot && $clrTop && $clrBot && ($textTop || $textBot)  ){
 	
 	$infoImg = recupImgSource($idImg);
 	$nomNouvImg = creerImage($infoImg,$textTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot);
@@ -42,7 +43,7 @@ if($idImg && $sizeTop && $sizeBot && $clrTop && $clrBot && $textTop && $textBot 
 	header('location:../index.php?action=vue&id='.$idNouvGen);
 }
 else{
-	echo "remplissez tous les champs";
+/*	echo "remplissez tous les champs";*/
 }
 
 function request($key){
@@ -107,8 +108,8 @@ function creerImage($info,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot){
 
 
 
-	imagettftext($image, $sizeTop, 0, ($x/2)-($textWidthTop/2), $sizeTop, $colorTop, $font, $texteTop);
-	imagettftext($image, $sizeBot, 0, ($x/2)-($textWidthBot/2), $y, $colorBot, $font, $textBot);
+	imagettftext($image, $sizeTop, 0, ($x/2)-($textWidthTop/2), ($sizeTop+10), $colorTop, $font, $texteTop);
+	imagettftext($image, $sizeBot, 0, ($x/2)-($textWidthBot/2), ($y-20), $colorBot, $font, $textBot);
 
 	switch ($info['type']) {
 		case 'jpeg':
