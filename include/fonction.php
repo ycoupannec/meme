@@ -60,7 +60,7 @@ function recupImgSource($idImg){
 
 
 function creerImage($info,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot){
-	$font=5;
+	$font='../fonts/impact.ttf';
 	$idUnique=uniqid();
 	//$font=loadFonts('myfont');
 	
@@ -90,9 +90,22 @@ function creerImage($info,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot){
 	}
 	$x = imagesx($image);
 	$y = imagesy($image);
+	
+
+
 	$colorTop = imagecolorallocate($image,255,255,255);
-	imagestring($image, $font, 0, 0,$texteTop,$colorTop);
-	imagestring($image, $font, 150, 150,$textBot,$colorTop);
+	$colorBot = imagecolorallocate($image,255,255,155);
+	/*imagestring($image, $font, 0, 0,$texteTop,$colorTop);
+	imagestring($image, $font, 150, 150,$textBot,$colorTop);*/
+	$textBoxTop=imagettfbbox($sizeTop, 0, $font, $texteTop);
+	$textWidthTop=$textBoxTop[2]-$textBoxTop[0];
+	$textBoxBot=imagettfbbox($sizeBot, 0, $font, $textBot);
+	$textWidthBot=$textBoxBot[2]-$textBoxBot[0];
+
+
+
+	imagettftext($image, $sizeTop, 0, ($x/2)-($textWidthTop/2), $sizeTop, $colorTop, $font, $texteTop);
+	imagettftext($image, $sizeBot, 0, ($x/2)-($textWidthBot/2), $y, $colorBot, $font, $textBot);
 
 	switch ($info['type']) {
 		case 'jpeg':
