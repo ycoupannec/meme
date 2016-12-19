@@ -1,7 +1,6 @@
 <?php
-define('EMPL_ORIGNAL', '../public/img/');
-define('EMPL_UPL', '../public/uploadImg/');
 
+require_once ".init.php";
 /*Pour générer une image on a besoin de :
 $sizeTop; taille de la police du haut.
 $sizeBot; taille de la police du bas.

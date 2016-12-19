@@ -1,11 +1,11 @@
 <?php
 
   //amener la librairie Mustache qui permet de modifier ....
-  include "include/Mustache/Autoloader.php";
+  require_once "include/Mustache/Autoloader.php";
   Mustache_Autoloader::register();
   //appeler .init
-  include "include/.init.php";
-  include "include/fonction.php";
+  require_once "include/.init.php";
+  require_once "include/fonction.php";
 
   
   $sql = new SQLpdo();
