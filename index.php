@@ -20,8 +20,6 @@
   ));
   //affichage du rendu
 
-  echo $m->render('header');
-
   if(isset($_POST['sendInput'])){
     $upl = new uploadFile('public/img/');
     $upl->uploadFromInput('UploadMeme');
@@ -39,32 +37,61 @@
   if(isset($_GET['m']) && !empty($_GET['m'])){
   $action = $_GET['m']; 
   if($result = $sql->fetch("SELECT * FROM `memeGenerate` LEFT JOIN memeImage ON memeImage.ID = memeGenerate.ID_memeImage WHERE memeGenerate.url= :url ", array(':url' => $action))){//prepare SQL request
-    echo $m->render('vue', array('ID' => $result['url'], 'TYPE' => $result['type'], 'IDGENE' => URL_SITE.'?m='.$result['url']));
+    if($result['ID_type'] == 'null'){
+      $type = $result['type'];
+    }
+    else{
+      $type = $result['ID_type'];
+    }
+    echo $m->render('header', array('OG' => 'uploadImg/'.$result['url'].'.'.$type.''));
+    echo $m->render('vue', array('ID' => $result['url'], 'TYPE' => $type, 'IDGENE' => URL_SITE.'?m='.$result['url']));
   }
   }
   else if (isset($_GET['action']) && $_GET['action'] =="generate"){
-  $result = $sql->fetch("SELECT * FROM `memeImage` WHERE ID= :id ", array(':id' => $_GET['id']));//prepare SQL request
+    echo $m->render('header', array('OG' => 'img/logo.png'));
+    
+    if(isset($_GET['url']) && !empty($_GET['url'])){
+      $ID = $_GET['url']; //mon image.jpg
+      $URL = $_GET['url']; //mon image.jpg
+      $type = substr(strrchr($URL, "."), 1); //jpg 
+    }
+    else{
+      $result = $sql->fetch("SELECT * FROM `memeImage` WHERE ID= :id ", array(':id' => $_GET['id']));//prepare SQL request
+      $URL = "meme/".EMPL_ORIGNAL.$result['ID'].".".$result['type'];     
+      $ID = $result['ID'];
+      $type = $result['type'];     
+    }
     
     //récupérer l'ID et le Type afin d'afficher l'image
     echo $m->render('creation',
       array(
-        "ID" => $result['ID'],
-        "type" => $result['type']
+        "ID" => $ID,
+        "URL" => $URL,
+        "type" => $type
       )
     );
   }
   elseif  (isset($_GET['action']) && $_GET['action'] =="vue") {
-  if(isset($_GET['id']) && is_numeric($_GET['id'])){
-    $id = intval($_GET['id']);
-    $result = $sql->fetch("SELECT * FROM `memeGenerate` LEFT JOIN memeImage ON memeImage.ID = memeGenerate.ID_memeImage WHERE memeGenerate.ID = :id ", array(':id' => $_GET['id']));//prepare SQL request
-    
-    echo $m->render('vue', array('ID' => $result['url'], 'TYPE' => $result['type'], 'IDGENE' => URL_SITE.'?m='.$result['url']));
-  }
+    if(isset($_GET['id']) && is_numeric($_GET['id'])){
+      $id = intval($_GET['id']);
+      $result = $sql->fetch("SELECT * FROM `memeGenerate` LEFT JOIN memeImage ON memeImage.ID = memeGenerate.ID_memeImage WHERE memeGenerate.ID = :id ", array(':id' => $_GET['id']));//prepare SQL request
+      if($result['ID_type'] == 'null'){
+        $type = $result['type'];
+      }
+      else{
+        $type = $result['ID_type'];
+      }
+
+      echo $m->render('header', array('OG' => 'uploadImg/'.$result['url'].'.'.$type.''));
+      echo $m->render('vue', array('ID' => $result['url'], 'TYPE' => $type, 'IDGENE' => URL_SITE.'?m='.$result['url']));
+    }
   }
   //si action ne vaut rien, ou si on ne connait pas la valeur de action alors on charge le main.html
   else{
     $result = $sql->fetchAll("SELECT * FROM `memeImage`");//prepare SQL request
-    echo $m->render('main', array("list" => $result));
+     
+     echo $m->render('header', array('OG' => 'img/logo.png'));
+     echo $m->render('main', array("list" => $result));
   }
 
 

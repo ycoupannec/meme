@@ -1,8 +1,8 @@
 function geneImage(idImg,sizeTop=null,sizeBot=null,clrTop=null,clrBot=null,textTop,textBot){
-	/*console.log($image,$type,$sizeTop,$sizeBot,$clrTop,$clrBot,$textTop,textBot);*/
-	$.get('include/fonction.php',{
+	//console.log($image,$type,$sizeTop,$sizeBot,$clrTop,$clrBot,$textTop,textBot);
+	$.get('include/fontionGeneImage.php',{
 
-
+		fonctionAppel:1,
 		sizeTop:sizeTop,
 		sizeBot:sizeBot,
 		clrTop:clrTop,
@@ -14,11 +14,14 @@ function geneImage(idImg,sizeTop=null,sizeBot=null,clrTop=null,clrBot=null,textT
 
 	})
     .done(function(data) {
-
+    	$("#content-image").empty();
+    	$("#content-image").html('<img id="image" src="data:image/jpeg;base64,'+data+'" alt="" class="img-responsive">');    	
+    	/*$('#image').attr('src', 'data:image/jpeg;base64,'+data+'');*/
     })
     .fail(function(data) {
         alert('Error: ' + data);
     });
+    console.log('ok');
 
 
 }

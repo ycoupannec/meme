@@ -1,7 +1,6 @@
 <?php
 
 require_once ".init.php";
-
 /*Pour générer une image on a besoin de :
 $sizeTop; taille de la police du haut.
 $sizeBot; taille de la police du bas.
@@ -12,39 +11,7 @@ $textBot; text du bas
 $idImg ; Id de l’image sélectionné.
  
 */
-$sizeTop = request('sizeTop');
-$sizeBot = request('sizeBot');
-$clrTop = request('clrTop');
-$clrBot = request('clrBot');
-$textTop = request('textTop');
-$textBot = request('textBot');
-$idImg = request('idImg');
 
-/*-------------------------------*/
-			/*DEBUG*/
-/*-------------------------------*/
-/*$sizeTop = 30;
-$sizeBot = 30;*/
-$clrHexaBot=$clrBot;
-$clrHexaTop=$clrTop;
-$clrBot =  hex2rgba($clrBot);
-$clrTop =  hex2rgba($clrTop);
-
-
-
-/*-------------------------------*/
-
-
-if($idImg && $sizeTop && $sizeBot && $clrTop && $clrBot && ($textTop || $textBot)  ){
-	
-	$infoImg = recupImgSource($idImg);
-	$nomNouvImg = creerImage($infoImg,$textTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot);
-	$idNouvGen = insertImg($nomNouvImg,$textTop,$textBot,$clrHexaTop,$clrHexaBot,$sizeTop,$sizeBot,$infoImg['ID']);
-	header('location:../index.php?action=vue&id='.$idNouvGen);
-}
-else{
-/*	echo "remplissez tous les champs";*/
-}
 
 function request($key){
 	 /*&& !empty(trim($_REQUEST[$key]))*/
@@ -56,19 +23,42 @@ function request($key){
 
 }
 function recupImgSource($idImg){
-	$sql= new SQLpdo();
-	$info=$sql->fetch("SELECT * FROM `memeImage` WHERE ID=:idImg", array(":idImg" => $idImg));
-	return $info;
+	if($idImg[0] == "h"){		
+		$info['type'] = substr(strrchr($idImg, "."), 1);
+		$info['URL'] = $idImg;
+		$info['GIPHY'] = true;
+		$info['ID'] = null;
 
+		return $info;
+	}
+	else{
+		$sql= new SQLpdo();
+		$info=$sql->fetch("SELECT * FROM `memeImage` WHERE ID=:idImg", array(":idImg" => $idImg));
+		$info['GIPHY'] = false;
+		$info['URL'] = null;
+		return $info;
+	}
 }
 
 
-function creerImage($info,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot){
+function creerImage($info,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot, $enregistrer = true){
 	$font='../fonts/impact.ttf';
 	$idUnique=uniqid();
-	//$font=loadFonts('myfont');
+
+	if($enregistrer){
+		$nameImage = EMPL_UPL.$idUnique.".".$info['type'];
+	}
+	else{
+		$nameImage = "../public/tmp/".md5($_SERVER['REMOTE_ADDR']).$info['type'];
+	}
 	
-	$monImage = EMPL_ORIGNAL.$info['ID'].".".$info['type'];
+	if($info['GIPHY']){
+		$monImage = $info['URL'];
+	}
+	else{
+		$monImage = EMPL_ORIGNAL.$info['ID'].".".$info['type'];
+	}
+
 	$IDimg = 1;
 	switch ($info['type']) {
 		case 'jpeg':
@@ -114,13 +104,13 @@ function creerImage($info,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot){
 	switch ($info['type']) {
 		case 'jpeg':
 		case 'jpg':
-			imagejpeg($image,EMPL_UPL.$idUnique.".".$info['type']);
+			$_img = imagejpeg($image,$nameImage);
 			break;
 		case 'png':
-			imagepng($image,EMPL_UPL.$idUnique.".".$info['type']);
+			$_img = imagepng($image,$nameImage);
 			break;
 		case 'gif':
-			imagegif($image,EMPL_UPL.$idUnique.".".$info['type']);
+			$_img = imagegif($image,$nameImage);
 			break;
 		case 'svg':
 			
@@ -130,24 +120,13 @@ function creerImage($info,$texteTop,$textBot,$clrTop,$clrBot,$sizeTop,$sizeBot){
 			# code...
 			break;
 	}
-	return $idUnique;
 
-}
-
-function loadFonts($nameFont){
-	switch ($nameFont) {
-		case 'myfont':
-			$font=imageloadfont('fonts/impact.ttf');
-
-			break;
-		
-		default:
-			# code...
-			break;
+	if($enregistrer){
+		return $idUnique;
 	}
-	
-
-	return $font;
+	else{
+		return $_img;
+	}
 }
 
 class SQLpdo {
@@ -180,11 +159,11 @@ class SQLpdo {
 	}
 }
 
-function insertImg($img,$textTop,$textBot,$clrTop=null,$clrBot=null,$sizeTop=null,$sizeBot=null,$id){
+function insertImg($img,$textTop,$textBot,$clrTop=null,$clrBot=null,$sizeTop=null,$sizeBot=null,$id, $type){
 	
 	$sql= new SQLpdo();
-	$idGen=$sql->insert("INSERT INTO `memeGenerate` ( url, textTop, textBot, clrTop, clrBot, sizeTop, sizeBot, ID_memeImage) VALUES ( :url, :textTop, :textBot, :clrTop, :clrBot, :sizeTop, :sizeBot, :ID_memeImage)",
-		array(":url" => $img,':textTop'=> $textTop, ':textBot'=> $textBot, ':clrTop'=> $clrTop, ':clrBot'=> $clrBot, ':sizeTop'=> $sizeTop, ':sizeBot'=> $sizeBot, ':ID_memeImage'=> $id ));
+	$idGen=$sql->insert("INSERT INTO `memeGenerate` ( url, textTop, textBot, clrTop, clrBot, sizeTop, sizeBot, ID_memeImage, ID_type) VALUES ( :url, :textTop, :textBot, :clrTop, :clrBot, :sizeTop, :sizeBot, :ID_memeImage, :type)",
+		array(":url" => $img,':textTop'=> $textTop, ':textBot'=> $textBot, ':clrTop'=> $clrTop, ':clrBot'=> $clrBot, ':sizeTop'=> $sizeTop, ':sizeBot'=> $sizeBot, ':ID_memeImage'=> $id, ':type' => $type ));
 
 	
 

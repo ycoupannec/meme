@@ -3,25 +3,60 @@
     <div class="row">
         <div class="col-md-6">
             <!-- affichage de l'image  -->
-            <img src="public/img/{{ID}}.{{type}}" alt="" class="img-responsive">
+            <div id="content-image">
+                <img id="image" src="{{URL}}" alt="" class="img-responsive">
+            </div>
         </div>
         <div class="col-md-6">
-            <form action="include/fonction.php" onsubmit="return testChampRemplis();">
+            <form action="include/saveImg.php" onsubmit="return testChampRemplis();">
                 <textarea id="textTop" name="textTop" placeholder="Top text" class="form-control" rows="6" ></textarea>
-                <button type="button" name="buttonZoomTop" onclick="changeSize('#sizeTop','add');" classe="btn btn-default btn-lg">+</button>
-                <button type="button" name="buttonDezoomTop" onclick="changeSize('#sizeTop','supp');" classe="btn btn-default btn-lg">-</button>
+                <button type="button" id="buttonZoomTop" name="buttonZoomTop" onclick="changeSize('#sizeTop','add');" classe="btn btn-default btn-lg">+</button>
+                <button type="button" id="buttonDezoomTop" name="buttonDezoomTop" onclick="changeSize('#sizeTop','supp');" classe="btn btn-default btn-lg">-</button>
                 <input id="sizeTop" type="hidden" name="sizeTop" value="30">
-                <input type="color" name="clrTop" value="" class="colorPick">
+                <input type="color" id="clrTop" name="clrTop" value="" class="colorPick">
                 <hr>
                 <textarea id="textBot" name="textBot" placeholder="Bottom text" class="form-control" rows="6" ></textarea>
-                <button type="button" name="buttonZoomBot" onclick="changeSize('#sizeBot','add');" classe="btn btn-default btn-lg">+</button>
-                <button type="button" name="buttonDezoomBot" onclick="changeSize('#sizeBot','supp');" classe="btn btn-default btn-lg">-</button>
+                <button type="button" id="buttonZoomBot" name="buttonZoomBot" onclick="changeSize('#sizeBot','add');" classe="btn btn-default btn-lg">+</button>
+                <button type="button" id="buttonDezoomBot" name="buttonDezoomBot" onclick="changeSize('#sizeBot','supp');" classe="btn btn-default btn-lg">-</button>
                 <input id='sizeBot' type="hidden" name="sizeBot" value="30">
-                <input type="color" name="clrBot" value="" class="colorPick">
+                <input type="color" id="clrBot" name="clrBot" value="" class="colorPick">
                 <hr>
-                <input type="hidden" name="idImg" value="{{ID}}">
+                <input type="hidden" id="idImg" name="idImg" value="{{ID}}">
                 <button type="submit" class="btn btn-success btn-lg">Generate</button>
             </form>
         </div>
     </div>
+    <script>
+        $(document).ready(function(){
+
+            function geneImgAjax(){
+                var textTop = $('#textTop').val();
+                var textBot = $('#textBot').val();
+  
+                var sizeTop = $('#sizeTop').val();
+                var sizeBot = $('#sizeBot').val();
+
+                var clrTop = $('#clrTop').val();
+                var clrBot = $('#clrBot').val();
+
+                var idImg = $('#idImg').val();
+
+               geneImage(idImg,sizeTop,sizeBot,clrTop,clrBot,textTop,textBot);
+            }
+
+
+            $( "#textTop, #textBot" ).on('keyup', function(e) {
+                geneImgAjax();     
+            });
+
+            $('#clrBot, #clrTop').change("change", function(){   
+                geneImgAjax();
+            });
+
+            $( "#buttonZoomBot, #buttonDezoomBot, #clrBot, #clrTop, #buttonDezoomTop, #buttonZoomTop" ).on('click', function(e) {
+                geneImgAjax();     
+            });
+
+        });
+    </script>
 </div>
